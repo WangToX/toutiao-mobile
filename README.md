@@ -23,6 +23,9 @@ npm run lint
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
 # 步骤：
+## 网址：
+1.黑马头条移动端-接口文档：https://toutiao.m.lipengzhou.com/api.html#
+2.头条移动端：https://www.yuque.com/lipengzhou/toutiao-mobile-vue
 ## 一、vue-cli创建项目，调整初始目录结构
 1、删除并修改初始化的默认文件；
 
@@ -38,7 +41,8 @@ vant2官网：
 https://vant-contrib.gitee.io/vant/v2/#/zh-CN/home
 
 导入Vant组件库：
-1.Vue 2 项目，安装 Vant 2:```npm i vant@latest-v2 -S```
+1.Vue2 项目，安装 Vant2：```npm i vant@latest-v2 -S```
+
 2.在main.js文件中一次性导入所有组件
 ```js
 // main.js
@@ -107,4 +111,21 @@ browserslist：https://cli.vuejs.org/zh/guide/browser-compatibility.html#browser
   <van-tabbar-item icon="tv-o" :to="{ name:'tv' }">视频</van-tabbar-item>
   <van-tabbar-item icon="manager-o" :to="{ name:'my' }">我的</van-tabbar-item>
 </van-tabbar>
+```
+# 六、封装请求模块axios
+1.npm i axios
+2.在utils文件夹下新建request.js
+```js
+// request.js
+import axios from 'axios'
+const request = axios.create({
+  baseURL: 'http://ttapi.research.itcast.cn/' // 基础路径
+})
+
+// 请求拦截器
+
+// 响应拦截器
+
+// 导出
+export default request
 ```
