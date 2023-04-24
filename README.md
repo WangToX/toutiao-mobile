@@ -38,8 +38,7 @@ vant2官网：
 https://vant-contrib.gitee.io/vant/v2/#/zh-CN/home
 
 导入Vant组件库：
-1.Vue 2 项目，安装 Vant 2：
-npm i vant@latest-v2 -S
+1.Vue 2 项目，安装 Vant 2:```npm i vant@latest-v2 -S```
 2.在main.js文件中一次性导入所有组件
 ```js
 // main.js
@@ -54,6 +53,7 @@ Vue.use(Vant);
 ②lib-flexible 用于设置 rem 基准值
 
 1.npm i -S amfe-flexible
+
 2.在main.js文件中
 ```js
 // main.js
@@ -61,6 +61,7 @@ Vue.use(Vant);
 import 'amfe-flexible'
 ```
 3.npm install postcss postcss-pxtorem --save-dev
+
 4.在根目录下创建postcss.config.js文件（PostCSS的配置文件）
 ```js
 // postcss.config.js
@@ -77,3 +78,33 @@ module.exports = {
 };
 ```
 browserslist：https://cli.vuejs.org/zh/guide/browser-compatibility.html#browserslist
+# 五、使用Vant自带的图标组件，并配置路由页面
+## 标签栏路由模式遇到的问题
+使用Vant2的Tabbar标签栏，按照下方代码，会出现<span style="color:red">标签栏第一个图标始终高亮，且点击无法切换到第一个标签页</span>的状态。
+错误代码：
+```html
+<van-tabbar v-model="active" route>
+  <van-tabbar-item icon="home-o" to="/" @click="handleClick">首页</van-tabbar-item>
+  <van-tabbar-item icon="comment-o" to="/qa">问答</van-tabbar-item>
+  <van-tabbar-item icon="tv-o" to="/tv">视频</van-tabbar-item>
+  <van-tabbar-item icon="manager-o" to="/my">我的</van-tabbar-item>
+</van-tabbar>
+```
+解决方法一：把 route 改成 routes
+```html
+<van-tabbar v-model="active" routes>
+  <van-tabbar-item icon="home-o" to="/" @click="handleClick">首页</van-tabbar-item>
+  <van-tabbar-item icon="comment-o" to="/qa">问答</van-tabbar-item>
+  <van-tabbar-item icon="tv-o" to="/tv">视频</van-tabbar-item>
+  <van-tabbar-item icon="manager-o" to="/my">我的</van-tabbar-item>
+</van-tabbar>
+```
+解决方法二：更改标签的to属性
+```html
+<van-tabbar v-model="active" route>
+  <van-tabbar-item icon="home-o" :to="{ name:'home' }" @click="handleClick">首页</van-tabbar-item>
+  <van-tabbar-item icon="comment-o" :to="{ name:'qa' }">问答</van-tabbar-item>
+  <van-tabbar-item icon="tv-o" :to="{ name:'tv' }">视频</van-tabbar-item>
+  <van-tabbar-item icon="manager-o" :to="{ name:'my' }">我的</van-tabbar-item>
+</van-tabbar>
+```
