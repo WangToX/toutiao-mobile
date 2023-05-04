@@ -7,3 +7,11 @@ export const login = (data) => {
     data
   })
 }
+
+// 获取验证码
+export function getCodes (mobile) {
+  return request({
+    method: 'GET',
+    url: `/v1_0/sms/codes/${mobile}`
+  })
+}

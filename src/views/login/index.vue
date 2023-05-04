@@ -48,7 +48,7 @@
 
 <script>
 import { Toast } from 'vant'
-import { login } from '@/api/user'
+import { login, getCodes } from '@/api/user'
 
 export default {
   name: 'login',
@@ -95,6 +95,31 @@ export default {
       if (errorInfo.errors[0]) {
         Toast({
           message: errorInfo.errors[0].message,
+          position: 'top'
+        })
+      }
+    },
+    // 发送验证码
+    async onSendCode () {
+      try {
+        // 校验手机号码
+        const loginForm = await this.$refs['login-form'].validate('mobile')
+        console.log(loginForm)
+        // 验证通过，请求验证码
+        const res = await getCodes(this.user.mobile)
+        console.log('getCodes: ', res)
+      } catch (error) {
+        let message = ''
+        if (error && error.response && error.response.status === 429) {
+          message = '发送验证码太频繁了，请一分钟后再试'
+        } else if (error.name === 'mobile') {
+          message = error.message
+        } else {
+          message = '发送验证码失败，请稍后重试'
+        }
+        console.dir(error)
+        Toast({
+          message: message,
           position: 'top'
         })
       }
