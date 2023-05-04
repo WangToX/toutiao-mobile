@@ -6,36 +6,40 @@
       left-arrow
       @click-left="onClickLeft"
     />
-    <van-form @submit="onSubmit">
+    <!--
+      只有表单验证通过才会调用onSubmit
+      show-error 是否在校验不通过时标红输入框
+      show-error-message 是否在校验不通过时在输入框下方展示错误提示
+      validate-first 是否在某一项校验不通过时停止校验
+    -->
+    <van-form
+      :show-error="false"
+      :show-error-message="false"
+      validate-first
+      ref="login-form"
+      @submit="onSubmit"
+      @failed="onFailed">
       <van-field
-        v-model="username"
-        name="用户名"
+        v-model="user.mobile"
+        name="mobile"
         label="用户名"
         placeholder="用户名"
-        :rules="[{ required: true, message: '请填写用户名' }]"
+        :rules="formRules.mobile"
       />
       <van-field
-        v-model="password"
-        type="password"
-        name="密码"
-        label="密码"
-        placeholder="密码"
-        :rules="[{ required: true, message: '请填写密码' }]"
-      />
-      <van-field
-        v-model="sms"
-        name="验证码"
+        v-model="user.code"
+        name="code"
         center
         clearable
         label="短信验证码"
         placeholder="请输入短信验证码"
-        :rules="[{ required: true, message: '请填写验证码' }]"
+        :rules="formRules.code"
       >
         <template #button>
-          <van-button size="small" type="primary">发送验证码</van-button>
+          <van-button size="small" type="primary" @click.prevent="onSendCode">发送验证码</van-button>
         </template>
       </van-field>
-      <div style="margin: 16px;">
+      <div class="login-btn">
         <van-button round block type="info" native-type="submit">登录</van-button>
       </div>
     </van-form>
@@ -44,26 +48,63 @@
 
 <script>
 import { Toast } from 'vant'
+import { login } from '@/api/user'
+
 export default {
   name: 'login',
   data () {
     return {
-      username: '',
-      password: '',
-      sms: ''
+      user: {
+        mobile: '',
+        code: ''
+      },
+      formRules: {
+        mobile: [
+          { required: true, message: '请填写手机号' },
+          { pattern: /^1[3|5|7|8|9]\d{9}$/, message: '手机号格式错误' }
+        ],
+        code: [
+          { required: true, message: '请填写验证码' },
+          { pattern: /^\d{6}$/, message: '验证码格式错误' }
+        ]
+      }
     }
   },
   methods: {
     onClickLeft () {
       Toast('返回')
     },
-    onSubmit (values) {
+    async onSubmit (values) {
       console.log('submit', values)
+      Toast.loading({
+        message: '登录中...',
+        forbidClick: true, // 禁止背景点击
+        duration: 0 // 展示时长(ms)，值为 0 时，toast 不会消失
+      })
+      try {
+        const res = await login(this.user)
+        console.log(res)
+        Toast.success('登录成功')
+      } catch (error) {
+        console.log(error)
+        Toast.fail('登录失败')
+      }
+    },
+    onFailed (errorInfo) {
+      console.log(errorInfo)
+      if (errorInfo.errors[0]) {
+        Toast({
+          message: errorInfo.errors[0].message,
+          position: 'top'
+        })
+      }
     }
   }
 }
 </script>
 
 <style scoped lang="scss">
-
+.login-btn{
+  padding: 26px 16px;
+}
 </style>

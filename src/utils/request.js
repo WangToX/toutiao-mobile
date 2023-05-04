@@ -1,7 +1,8 @@
 /* 请求模块 */
 import axios from 'axios'
 const request = axios.create({
-  baseURL: 'http://ttapi.research.itcast.cn/' // 基础路径
+  baseURL: 'http://toutiao.itheima.net/' // 基础路径
+  // http://toutiao.itheima.net/v1_0/authorizations // 原始路径，不能用了
 })
 
 // 请求拦截器

@@ -120,6 +120,7 @@ browserslist：https://cli.vuejs.org/zh/guide/browser-compatibility.html#browser
 import axios from 'axios'
 const request = axios.create({
   baseURL: 'http://ttapi.research.itcast.cn/' // 基础路径
+  //备用路径： http://toutiao.itheima.net/
 })
 
 // 请求拦截器
@@ -129,3 +130,16 @@ const request = axios.create({
 // 导出
 export default request
 ```
+# 七、登录页面
+1.基本样式vant，注意调整main.js中的引入顺序，在引入Vant之后引入全局样式，可覆盖Vant原有样式，自定义更加方便，不需要加"!important"
+
+2.接口实现api、async/await、try/catch
+
+3.状态提示Toast
+
+4.表单验证rules-可以自定义验证规则及样式(标红或提示)
+
+5.验证码：
+校验手机号-验证通过-请求发送验证码-用户收到短信-输入验证码-请求登录
+请求发送验证码-隐藏发送按钮-显示倒计时-倒计时结束-隐藏倒计时-显示发送按钮
+
