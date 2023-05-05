@@ -143,3 +143,5 @@ export default request
 校验手机号-验证通过-请求发送验证码-用户收到短信-输入验证码-请求登录
 请求发送验证码-隐藏发送按钮-显示倒计时-倒计时结束-隐藏倒计时-显示发送按钮
 
+# 八、存储token
+在mutations中将token放入state中，一旦刷新，数据就会丢失，所以还要将token放在本地存储localStorage,将localStorage的方法封装起来，方便使用。

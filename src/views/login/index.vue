@@ -42,6 +42,7 @@
             type="primary"
             round
             :loading="isSendCodeLoading"
+            loading-text="加载中"
             @click.prevent="onSendCode"
           >
             <van-count-down
@@ -120,6 +121,8 @@ export default {
         const res = await login(this.user)
         console.log(res)
         Toast.success('登录成功')
+        // 存储token
+        this.$store.commit('user/SET_USER', res.data.data)
       } catch (error) {
         console.log(error)
         Toast.fail('登录失败')
