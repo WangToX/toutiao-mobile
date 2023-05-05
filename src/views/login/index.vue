@@ -36,13 +36,46 @@
         :rules="formRules.code"
       >
         <template #button>
-          <van-button size="small" type="primary" @click.prevent="onSendCode">发送验证码</van-button>
+          <van-button
+            class="send-btn"
+            size="mini"
+            type="primary"
+            round
+            :loading="isSendCodeLoading"
+            @click.prevent="onSendCode"
+          >
+            <van-count-down
+              v-if="isCountDownShow"
+              :time="1000 * 5"
+              format="ss s"
+              @finish="isCountDownShow = false"
+            />
+            <span v-else>发送验证码</span>
+          </van-button>
         </template>
+        <!-- <template #button>
+          <van-count-down
+            v-if="isCountDownShow"
+            :time="1000 * 5"
+            format="ss s"
+            @finish="isCountDownShow = false"
+          />
+          <van-button
+            v-else
+            class="send-btn"
+            size="mini"
+            type="primary"
+            round
+            :loading="isSendCodeLoading"
+            @click.prevent="onSendCode"
+          >发送验证码</van-button>
+        </template> -->
       </van-field>
       <div class="login-btn">
         <van-button round block type="info" native-type="submit">登录</van-button>
       </div>
     </van-form>
+    <van-divider>账号：13611111111 密码：246810</van-divider>
   </div>
 </template>
 
@@ -67,7 +100,9 @@ export default {
           { required: true, message: '请填写验证码' },
           { pattern: /^\d{6}$/, message: '验证码格式错误' }
         ]
-      }
+      },
+      isCountDownShow: false, // 倒计时，false不显示
+      isSendCodeLoading: false // loading状态，false不显示
     }
   },
   methods: {
@@ -105,9 +140,13 @@ export default {
         // 校验手机号码
         const loginForm = await this.$refs['login-form'].validate('mobile')
         console.log(loginForm)
+        // 开启loading状态
+        this.isSendCodeLoading = true
         // 验证通过，请求验证码
         const res = await getCodes(this.user.mobile)
         console.log('getCodes: ', res)
+        // 请求验证码成功后，显示倒计时
+        this.isCountDownShow = true
       } catch (error) {
         let message = ''
         if (error && error.response && error.response.status === 429) {
@@ -123,6 +162,8 @@ export default {
           position: 'top'
         })
       }
+      // 无论验证码发送是否成功都要关闭Loading
+      this.isSendCodeLoading = false
     }
   }
 }
@@ -131,5 +172,9 @@ export default {
 <style scoped lang="scss">
 .login-btn{
   padding: 26px 16px;
+}
+.send-btn{
+  font-size: 10px;
+  width: 100%;
 }
 </style>
