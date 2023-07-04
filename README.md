@@ -82,8 +82,8 @@ module.exports = {
 };
 ```
 browserslist：https://cli.vuejs.org/zh/guide/browser-compatibility.html#browserslist
-# 五、使用Vant自带的图标组件，并配置路由页面
-## 标签栏路由模式遇到的问题
+## 五、使用Vant自带的图标组件，并配置路由页面
+### 标签栏路由模式遇到的问题
 使用Vant2的Tabbar标签栏，按照下方代码，会出现<span style="color:red">标签栏第一个图标始终高亮，且点击无法切换到第一个标签页</span>的状态。
 错误代码：
 ```html
@@ -94,7 +94,11 @@ browserslist：https://cli.vuejs.org/zh/guide/browser-compatibility.html#browser
   <van-tabbar-item icon="manager-o" to="/my">我的</van-tabbar-item>
 </van-tabbar>
 ```
-解决方法一：把 route 改成 routes
+
+经验证，解决方法一在刷新页面时还是会出现问题：
+若当前页面非首个标签页面，则刷新时，页面正常，还停留在原来的标签页上，但高亮会出现在首个标签上，且点击首个标签，页面不切换。
+
+解决方法一（错误的解决方法）：把 route 改成 routes
 ```html
 <van-tabbar v-model="active" routes>
   <van-tabbar-item icon="home-o" to="/" @click="handleClick">首页</van-tabbar-item>
@@ -112,7 +116,7 @@ browserslist：https://cli.vuejs.org/zh/guide/browser-compatibility.html#browser
   <van-tabbar-item icon="manager-o" :to="{ name:'my' }">我的</van-tabbar-item>
 </van-tabbar>
 ```
-# 六、封装请求模块axios
+## 六、封装请求模块axios
 1.npm i axios
 2.在utils文件夹下新建request.js
 ```js
@@ -123,25 +127,49 @@ const request = axios.create({
   //备用路径： http://toutiao.itheima.net/
 })
 
-// 请求拦截器
+// 添加请求拦截器
+axios.interceptors.request.use(function (config) {
+    // 在发送请求之前做些什么
+    return config
+  }, function (error) {
+    // 对请求错误做些什么
+    return Promise.reject(error)
+  })
 
-// 响应拦截器
+// 添加响应拦截器
+axios.interceptors.response.use(function (response) {
+    // 2xx 范围内的状态码都会触发该函数。
+    // 对响应数据做点什么
+    return response
+  }, function (error) {
+    // 超出 2xx 范围的状态码都会触发该函数。
+    // 对响应错误做点什么
+    return Promise.reject(error)
+  })
 
 // 导出
 export default request
 ```
-# 七、登录页面
+## 七、登录页面
 1.基本样式vant，注意调整main.js中的引入顺序，在引入Vant之后引入全局样式，可覆盖Vant原有样式，自定义更加方便，不需要加"!important"
 
 2.接口实现api、async/await、try/catch
 
-3.状态提示Toast
+3.状态提示Vant Toast轻提示
 
 4.表单验证rules-可以自定义验证规则及样式(标红或提示)
 
 5.验证码：
 校验手机号-验证通过-请求发送验证码-用户收到短信-输入验证码-请求登录
+<span style="color:red">记住一个原则：</span>任何和网络交互有关的视图都应该在网络请求期间禁用，<span style="color:red">防止请求过慢导致多次触发请求行为。</span>
 请求发送验证码-隐藏发送按钮-显示倒计时-倒计时结束-隐藏倒计时-显示发送按钮
 
-# 八、存储token
+## 八、存储token
+Token 是用户登录成功之后服务端返回的一个身份令牌,需要把它存储到一个公共的位置，方便随时取用。
+● 登录成功，将 Token 存储到 Vuex 容器中 
+  ○ 获取方便
+  ○ 响应式
+● 为了持久化，还需要把 Token 放到本地存储 
+  ○ 持久化
+
 在mutations中将token放入state中，一旦刷新，数据就会丢失，所以还要将token放在本地存储localStorage,将localStorage的方法封装起来，方便使用。

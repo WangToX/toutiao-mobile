@@ -28,6 +28,7 @@ module.exports = {
       rootValue({ file }) {
         return file.indexOf('vant') !== -1 ? 37.5 : 75;
       },
+      // rootValue: 37.5,
       // 需要转换的css属性，*就是所有属性都要转换
       propList: ['*']
     },

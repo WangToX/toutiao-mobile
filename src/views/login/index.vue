@@ -123,6 +123,8 @@ export default {
         Toast.success('登录成功')
         // 存储token
         this.$store.commit('user/SET_USER', res.data.data)
+        // 登录成功，跳转到上一个页面
+        this.$router.back()
       } catch (error) {
         console.log(error)
         Toast.fail('登录失败')
